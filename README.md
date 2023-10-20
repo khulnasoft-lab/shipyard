@@ -1,293 +1,84 @@
-# The Shipyard CLI
+# Shipyard Github Action
 
-A tool to manage Ephemeral Environments on the Shipyard platform.
+[![GitHub License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/khulnasoft-lab/shipyard/github-action/LICENSE) [![Github Action Community](https://img.shields.io/badge/community-Github%20Actions%20Discuss-343434.svg)](https://github.community/c/github-ecosystem/github-apps/64)
 
-## Installation
+Use Github Action to run jobs on ephemeral environments automatically deployed by Shipyard, authenticating into them via a bypass token.
+This job connects with Shipyard during a Github Action job, fetching necessary environment variables in order to run e2e tests where authentication via OAuth is normally required.
 
-- **Linux and macOS**
-    ```
-    curl https://www.shipyard.khulnasoft.com/install.sh | bash
-    ```
-- **Windows**
-    - Navigate to [releases page](https://github.com/khulnasoft-lab/shipyard/releases) and download the executable.
+## How to use
 
-- **Homebrew**
-    ```
-    brew tap shipyard/tap
-    brew install shipyard
-    ```
-
-## Login
-
-Run `shipyard login` to initialize the CLI. This will prompt you to log in to Shipyard in the browser. The CLI will then
-save your API token in a local config. You're ready to start running commands.
-
-## Set Your Token Manually
-
-Set your Shipyard API token as the value of the `SHIPYARD_API_TOKEN` environment variable.
-Or set it as the value for the `api_token` config key.
-
-You can get it by going to [your profile page](https://shipyard.khulnasoft.com/profile).
-
-### Set a Shipyard token
-
-```bash
-shipyard set token
-```
-
-You can get in touch with us at [support@shipyard.khulnasoft.com](mailto:support@shipyard.khulnasoft.com) if you would like to enable API
-access for your org. If you have any other questions, feel free to join
-our community [Slack](https://join.slack.com/t/shipyardcommunity/shared_invite/zt-x830cx39-BuiQKZwvhG7zGRTXAvojVQ).
-
-Alternatively, you can use a configuration file stored in `$HOME/.shipyard/config.yaml` by default.
-When you run the CLI for the first time, it will create a default empty config that you can then edit.
-
-You can also specify a non-default config path with the `--config {path}` flag added to any command.
-
-Add any configuration values in your config and ensure the file follows YAML syntax.
-For example:
-
-```yaml
-api_token: <your-token>
-org: <your-non-default-org>
-```
-
-The values of your environment variables override their corresponding values in the config.
-
-## Basic usage
-
-### Get all orgs you are a member of
-
-```bash
-shipyard get orgs
-```
-
-### Set the global default org
-
-```bash
-shipyard set org {org-name}
-```
-
-### Get the currently configured org
-
-```bash
-shipyard get org
-```
-
-### List all environments
-
-```bash
-shipyard get environments
-```
-
-Available flags:
-
-| Name                | Description                                          | Type    | Default Value    |
-|---------------------|------------------------------------------------------|---------|------------------|
-| branch              | Filter by branch name                                | string  |                  |
-| deleted             | Return deleted environments                          | boolean | false            |
-| json                | Print the complete JSON output                       | boolean | false            |
-| name                | Filter by name of the application                    | string  |                  |
-| org-name            | Filter by org name, if you are part of multiple orgs | string  | your default org |
-| page                | Page number requested                                | int     | 1                |
-| page-size           | Page size requested                                  | int     | 20               |
-| pull-request-number | Filter by pull request number                        | string  |                  |
-| repo-name           | Filter by repo name                                  | string  |                  |
-
-**Examples:**
-
-- List all environments running the repo `flask-backend` on branch `main`:
-
-```bash
-shipyard get environments --repo-name flask-backend --branch main
-```
-
-- List all deleted environments:
-
-```bash
-shipyard get environments --deleted
-```
-
-### Get details for a specifc environment by its UUID
-
-```bash
-shipyard get environment {environment_uuid}
-```
-
-Available flags:
-
-| Name     | Description                                          | Type    | Default Value    |
-|----------|------------------------------------------------------|---------|------------------|
-| json     | Print the complete JSON output                       | boolean | false            |
-| org-name | Filter by org name, if you are part of multiple orgs | string  | your default org |
-
-### Stop a running environment
-
-```bash
-shipyard stop environment {environment_uuid}
-```
-
-### Restart a stopped environment
-
-```bash
-shipyard restart environment {environment_uuid}
-```
-
-### Cancel ongoing build for an environment
-
-```bash
-shipyard cancel environment {environment_uuid}
-```
-
-### Rebuild an environment
-
-```bash
-shipyard rebuild environment {environment_uuid}
-```
-
-### Revive a deleted environment
-
-```bash
-shipyard revive environment {environment_uuid}
-```
-
-### Get all services and exposed ports for an environment
-
-```bash
-shipyard get services --env {environment_uuid}
-```
-
-### Exec into a running environment's service
-
-Execute any command with any arguments and flags in a given service for a **running** environment. Pass any command
-arguments after a double slash.
-
-```bash
-shipyard exec --env {environment_uuid} --service {service_name} -- bash
-```
-
-### Port forward a running environment's service's port
-
-```bash
-shipyard port-forward --env {environment_uuid} --service {service_name} --ports {local_port}:{service_container_port}
-```
-
-### Get logs for a running environment's service
-
-```bash
-shipyard logs --env {environment_uuid} --service {service_name}
-```
-
-### Visit an environment
-
-```bash
-shipyard visit {environment_uuid}
-```
-
-Available flags:
-
-| Name   | Description                   | Type    | Default Value |
-|--------|-------------------------------|---------|---------------|
-| follow | Follow the logs output        | boolean | false         |
-| tail   | # of recent log lines to show | int     | 3000          |
-
-## Build executable from code:
-
-You can make an executable by running the following command:
-
-```bash
-make
-```
-
-To run this new executable:
-
-```bash
-./shipyard
-```
-
-## Enable Autocompletion
-
-### Bash
-
-This script depends on the `bash-completion` package. If it is not installed already, you can install it via your OS's
-package manager.
-To load completions in your current shell session:
+In your Github Workflow file located in `.github/workflows/`, you can use the Shipyard's Github Action as per the following example:
 
 ```
-source <(shipyard completion bash)
+on: [pull_request]
+
+jobs:
+  cypress-e2e-tests:
+    runs-on: ubuntu-latest
+    name: Collect the bypass token and URL for an authenticated ephemeral environment attached to this PR in order to run e2e tests on it.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Fetch Shipyard Tokens
+        uses: khulnasoft-lab/shipyard/fetch-shipyard-env@github-action
+        env:
+          SHIPYARD_API_TOKEN: ${{ secrets.SHIPYARD_API_TOKEN }}
+      - name: Run the e2e tests on the ephemeral environment
+        run: npm run test
+        shell: bash
+        env:
+            CYPRESS_BASE_URL: $SHIPYARD_ENVIRONMENT_URL
+            CYPRESS_BYPASS_TOKEN: $SHIPYARD_BYPASS_TOKEN
+        
 ```
 
-To load completions for every new session, execute the following once.
+The Github Action can be configured by passing inputs or environment variables:
 
-On Linux:
-
+**Inputs**
 ```
-shipyard completion bash > /etc/bash_completion.d/shipyard
-```
-
-On macOS:
-
-```
-shipyard completion bash > $(brew --prefix)/etc/bash_completion.d/shipyard
+  - name: Fetch Shipyard Tokens
+    uses: shipyard/github-action/fetch-shipyard-env@1.0.0
+    with:
+        api-token: ${{ secrets.SHIPYARD_API_TOKEN }}
+        timeout-minutes: 30
 ```
 
-### Zsh
+| Input name | Description | Default Value |
+| --------------- | --------------- |--------------- |
+| `api-token` | Token required to connect to Shipyard's APIs. Can be obtained from your Organization's setting page | -|
+| `timeout-minutes` | Number of minutes to wait for Shipyard environment before timing out. | 60|
+| `app-name` | Filter the environments by name of the application on the Shipyard app. | -|
 
-If shell completion is not already enabled in your environment, you will need to enable it. You can execute the
-following once:
 
+**Environment Variables**
 ```
-echo "autoload -U compinit; compinit" >> ~/.zshrc
-```
-
-To load completions in your current shell session:
-
-```
-source <(shipyard completion zsh); compdef _shipyard shipyard
-```
-
-To load completions for every new session, execute the following once.
-
-On Linux:
-
-```
-shipyard completion zsh > "${fpath[1]}/_shipyard"
+  - name: Fetch Shipyard Tokens
+    uses: shipyard/github-action/fetch-shipyard-env@1.0.0
+    env:
+      SHIPYARD_API_TOKEN: ${{ secrets.SHIPYARD_API_TOKEN }}
+      SHIPYARD_TIMEOUT: 30
+      INPUT_APP_NAME: 'react-app'
 ```
 
-On macOS:
+| Environment Variable | Description | Default Value |
+| --------------- | --------------- |--------------- |
+| `SHIPYARD_API_TOKEN` | Token required to connect to Shipyard's APIs. Can be obtained from your Organization's setting page  |-|
+| `SHIPYARD_TIMEOUT` | Number of minutes to wait for Shipyard environment before timing out. |60|
+| `SHIPYARD_APP_NAME` | Filter the environments by name of the application on the Shipyard app. |-|
 
-```
-shipyard completion zsh > $(brew --prefix)/share/zsh/site-functions/_shipyard
-```
+**NOTE**: Inputs are given precedence over environment variables.
 
-You will need to start a new shell for this setup to take effect.
+If input `api-token` or environment variable `SHIPYARD_API_TOKEN` is not provided, error is raised.
 
-### Fish
+On successful run, the following environment variables are set, which can then be passed on to other actions in the same workflow.
 
-To load completions in your current shell session:
+| Parameter Name | Description |
+| --------------- | --------------- |
+|`SHIPYARD_ENVIRONMENT_URL` | URL of the ephemeral environment |
+|`SHIPYARD_ENVIRONMENT_ID`  | ID of the ephemeral environment  |
+|`SHIPYARD_BYPASS_TOKEN`    | Token to bypass authentication   |
 
-```
-$ shipyard completion fish | source
-```
 
-To load completions for each session, execute once:
+## Resources
 
-```
-shipyard completion fish > ~/.config/fish/completions/shipyard.fish
-```
-
-### PowerShell
-
-To load completions in your current shell session:
-
-```
-shipyard completion powershell | Out-String | Invoke-Expression
-```
-
-To load completions for every new session, run:
-
-```
-shipyard completion powershell > shipyard.ps1
-```
-
-and source this file from your PowerShell profile.
+[Shipyard Documentation](https://docs.shipyard.build/docs/)

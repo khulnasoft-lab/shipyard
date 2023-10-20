@@ -1,9 +1,3 @@
-.DS_Store
-shipyard
-bin
-.envrc
-dist/
-.idea
 .pytest_cache
 .DS_Store
 *.pyc

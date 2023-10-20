@@ -1,6 +1,0 @@
-version: '3'
-
-services:
-  shipyard:
-    build: '.'
-    command: ["/bin/sh", "-c", "while true; do sleep 86400; done"]
