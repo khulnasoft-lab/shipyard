@@ -8,7 +8,7 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/google/go-cmp v0.5.9
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
+	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.17.0
 	gopkg.in/yaml.v3 v3.0.1
