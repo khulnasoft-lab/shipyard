@@ -6,7 +6,7 @@ require (
 	github.com/agnivade/levenshtein v1.1.1
 	github.com/docker/cli v24.0.8+incompatible
 	github.com/fatih/color v1.15.0
-	github.com/google/go-cmp v0.5.9
+	github.com/google/go-cmp v0.6.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/spf13/cobra v1.8.0
