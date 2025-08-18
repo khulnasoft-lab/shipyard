@@ -190,7 +190,7 @@ const WIDGET_API_ENDPOINTS = {
   mvg: 'https://www.mvg.de/api/fib/v2/',
   publicIp: 'https://ipapi.co/json',
   publicIp2: 'https://api.ipgeolocation.io/ipgeo',
-  publicIp3: 'http://ip-api.com/json',
+  publicIp3: 'https://ip-api.com/json', // verify HTTPS availability or use pro endpoint / server proxy
   publicIp4: 'https://api.ip2location.io/',
   readMeStats: 'https://github-readme-stats.vercel.app/api',
   rescueTime: 'https://www.rescuetime.com/anapi/data',
