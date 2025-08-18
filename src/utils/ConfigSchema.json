@@ -240,7 +240,10 @@
         "title": { "type": "string" },
         "description": { "type": "string" },
         "icon": { "type": "string" },
-        "url": { "type": "string", "pattern": "^(http|/|[a-zA-Z0-9.-]+)(://)?" },
+        "url": { 
+          "type": "string", 
+          "pattern": "^(https?://[^\\s/$.?#].[^\\s]*|/[^\\s]*|[a-zA-Z0-9.-]+://[^\\s]+)$"
+        },
         "displayData": { "$ref": "#/definitions/displayData" },
         "target": { "type": "string", "enum": ["newtab", "sametab", "parent", "top", "modal", "workspace", "clipboard"] },
         "hotkey": { "type": "number", "minimum": 0, "maximum": 9 },
