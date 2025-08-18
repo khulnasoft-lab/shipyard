@@ -133,8 +133,9 @@ const method = (targetMethod, mw) => (req, res, next) =>
 
 /* Rate limiting: 100 requests/15min window */
 const limiter = RateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000,
+  max: process.env.RATE_LIMIT_MAX || 100,
+  skip: () => process.env.NODE_ENV === 'development',
 });
 
 /* Express app setup */
