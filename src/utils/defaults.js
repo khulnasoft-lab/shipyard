@@ -149,7 +149,7 @@ const FAVICON_API_ENDPOINTS = {
   yandex: 'https://favicon.yandex.net/favicon/$URL',
   google: 'https://www.google.com/s2/favicons?sz=128&domain_url=$URL',
   besticon: 'https://besticon-demo.herokuapp.com/icon?url=$URL&size=80..120..200',
-  webmasterapi: 'https://api.webmasterapi.com/v1/favicon/yEwx0ZFs0CSPshHq/$URL',
+  webmasterapi: 'https://api.webmasterapi.com/v1/favicon/$API_KEY/$URL',
   mcapi: 'https://eu.mc-api.net/v3/server/favicon/$URL',
 };
 
