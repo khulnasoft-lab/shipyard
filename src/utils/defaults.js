@@ -76,7 +76,7 @@ const LOCAL_STORAGE_KEYS = {
   CUSTOM_COLORS: 'customColors',
   CONF_SECTIONS: 'confSections',
   CONF_PAGES: 'confPages',
-  CONF_WIDGETS: 'confSections',
+  CONF_WIDGETS: 'confWidgets',
   PAGE_INFO: 'pageInfo',
   APP_CONFIG: 'appConfig',
   BACKUP_ID: 'backupId',
