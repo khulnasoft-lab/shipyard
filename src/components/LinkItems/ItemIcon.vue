@@ -190,8 +190,16 @@ const app = express()
   })
   // Serve .yml files with optional protection
   .get('/*.yml', protectConfig, (req, res) => {
-    const ymlFile = req.path.split('/').pop();
-    res.sendFile(path.join(__dirname, process.env.USER_DATA_DIR || 'user-data', ymlFile));
+    const ymlFile = path.basename(req.path); // Sanitize to prevent path traversal
+    const userDataDir = path.resolve(__dirname, process.env.USER_DATA_DIR || 'user-data');
+    const filePath = path.join(userDataDir, ymlFile);
+    
+    // Ensure the resolved path is within the user-data directory
+    if (!filePath.startsWith(userDataDir)) {
+      return res.status(403).send('Access denied');
+    }
+    
+    res.sendFile(filePath);
   })
   // Serve static files (user-data, dist, public)
   .use(express.static(path.join(__dirname, process.env.USER_DATA_DIR || 'user-data')))
