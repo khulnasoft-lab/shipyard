@@ -17,7 +17,7 @@ import HomeMixin from '@/mixins/HomeMixin';
 import SideBar from '@/components/Workspace/SideBar';
 import WebContent from '@/components/Workspace/WebContent';
 import WidgetView from '@/components/Workspace/WidgetView';
-import MultiTaskingWebContent from '@/components/Workspace/MultiTaskingWebComtent'; // Fixed typo
+import MultiTaskingWebContent from '@/components/Workspace/MultiTaskingWebContent';
 import Defaults from '@/utils/defaults';
 
 export default {
